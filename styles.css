@@ -3,9 +3,11 @@
     margin: 0;
     padding: 0;
     font-family: 'Nanum Gothic', '맑은 고딕', sans-serif;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 :root {
+    /* 기본 테마 색상 (던전) */
     --warrior-color: #e74c3c;
     --rogue-color: #3498db;
     --wizard-color: #9b59b6;
@@ -15,15 +17,52 @@
     --neutral-color: #f39c12;
     --background-color: #f5f5f5;
     --card-bg: #ffffff;
+    --text-color: #333333;
+    --border-color: #dddddd;
+    --accent-color: #4a6fa5;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --theme-pattern: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="%23f5f5f5"/><path d="M0 10L100 10M10 0L10 100" stroke="%23e0e0e0" stroke-width="1"/></svg>');
+}
+
+/* 정글 테마 */
+.jungle-theme {
+    --primary-color: #27ae60;
+    --background-color: #e9f5e9;
+    --card-bg: #f2f9f2;
+    --accent-color: #27ae60;
+    --border-color: #bae0bc;
+    --theme-pattern: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="%23e9f5e9"/><path d="M20 20C40 20 40 40 60 40C80 40 80 20 100 20" stroke="%23bae0bc" stroke-width="1" fill="none"/><path d="M0 60C20 60 20 80 40 80C60 80 60 60 80 60" stroke="%23bae0bc" stroke-width="1" fill="none"/></svg>');
+}
+
+/* 우주 테마 */
+.space-theme {
+    --primary-color: #9b59b6;
+    --background-color: #1a1a2e;
+    --card-bg: #2c2c44;
+    --text-color: #e0e0e0;
+    --border-color: #4a4a6a;
+    --accent-color: #9b59b6;
+    --shadow-color: rgba(155, 89, 182, 0.2);
+    --theme-pattern: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="%231a1a2e"/><circle cx="20" cy="20" r="1" fill="%23fff" opacity="0.5"/><circle cx="50" cy="50" r="0.8" fill="%23fff" opacity="0.4"/><circle cx="70" cy="30" r="1.2" fill="%23fff" opacity="0.6"/><circle cx="30" cy="70" r="0.6" fill="%23fff" opacity="0.3"/><circle cx="80" cy="80" r="1" fill="%23fff" opacity="0.5"/></svg>');
+}
+
+/* 다크 모드 */
+.dark-theme {
+    --background-color: #222233;
+    --card-bg: #2c2c3c;
+    --text-color: #e0e0e0;
+    --border-color: #444455;
+    --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 body {
     background-color: var(--background-color);
-    color: #333;
+    color: var(--text-color);
     line-height: 1.6;
     padding: 20px;
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="%23f5f5f5"/><path d="M0 10L100 10M10 0L10 100" stroke="%23e0e0e0" stroke-width="1"/></svg>');
+    background-image: var(--theme-pattern);
     background-repeat: repeat;
+    min-height: 100vh;
 }
 
 .container {
@@ -32,9 +71,10 @@ body {
     background-color: var(--card-bg);
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px var(--shadow-color);
     position: relative;
     overflow: hidden;
+    color: var(--text-color);
 }
 
 .container::before {
@@ -50,7 +90,7 @@ body {
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #333;
+    color: var(--text-color);
     position: relative;
     padding-bottom: 10px;
     font-size: 2rem;
@@ -63,9 +103,55 @@ h1::after {
     margin-top: 5px;
 }
 
+.jungle-theme h1::after {
+    content: "🌴";
+}
+
+.space-theme h1::after {
+    content: "🚀";
+}
+
 h2, h3 {
     text-align: center;
     margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+/* 테마 및 모드 전환 컨트롤 */
+#theme-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.theme-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.theme-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.theme-btn.active {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
 }
 
 /* 직업 선택 섹션 */
@@ -83,9 +169,9 @@ h2, h3 {
 .class-option {
     flex: 1;
     padding: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    background-color: #f9f9f9;
+    background-color: var(--card-bg);
     transition: all 0.3s;
     position: relative;
     overflow: hidden;
@@ -114,7 +200,7 @@ h2, h3 {
 
 .class-option:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 20px var(--shadow-color);
 }
 
 .class-option h3 {
@@ -155,54 +241,121 @@ h2, h3 {
 
 /* 게임 컨테이너 */
 #game-container {
-    background-color: #f9f9f9;
+    background-color: var(--card-bg);
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 20px;
-    border: 1px solid #ddd;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 3px 10px var(--shadow-color);
+    transition: opacity 0.5s ease, transform 0.3s ease;
+}
+
+#game-container.fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+#game-container.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#game-container.shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
 /* 스탯 섹션 */
 #stats {
-    background-color: #fff;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: var(--card-bg);
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 15px;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     border-left: 5px solid var(--primary-color);
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
 
-.stat-row {
+.stat-circle {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--background-color);
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 10px var(--shadow-color);
 }
 
-.stat-row p {
-    margin: 5px 0;
-}
-
-#hp, #gold, #luck {
+.stat-value {
+    font-size: 1.2rem;
     font-weight: bold;
     color: var(--primary-color);
 }
 
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-color);
+}
+
+.hp-circle {
+    background: conic-gradient(var(--danger-color) var(--percent, 100%), var(--background-color) 0);
+}
+
+.gold-circle {
+    background: conic-gradient(var(--neutral-color) var(--percent, 100%), var(--background-color) 0);
+}
+
+.luck-circle {
+    background: conic-gradient(var(--success-color) var(--percent, 100%), var(--background-color) 0);
+}
+
+.floor-display {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 1.2em;
+}
+
+.floor-display span {
+    color: var(--primary-color);
+    font-size: 1.3em;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
 /* 인벤토리 */
 #inventory {
-    background-color: #fff;
+    background-color: var(--card-bg);
     padding: 15px;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     margin-bottom: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
 
 #inventory h3 {
     margin-bottom: 10px;
     font-size: 1.1rem;
-    color: #555;
+    color: var(--text-color);
 }
 
 #items {
@@ -210,7 +363,7 @@ h2, h3 {
     gap: 10px;
     padding: 10px;
     min-height: 60px;
-    background-color: #f5f5f5;
+    background-color: var(--background-color);
     border-radius: 8px;
     flex-wrap: wrap;
     align-items: center;
@@ -218,33 +371,33 @@ h2, h3 {
 
 .item {
     padding: 8px 15px;
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .item:hover {
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 /* 상인 */
 #merchant {
     margin-top: 15px;
     padding: 15px;
-    background-color: #f5f5f5;
+    background-color: var(--background-color);
     border-radius: 8px;
-    border: 1px dashed #aaa;
+    border: 1px dashed var(--border-color);
 }
 
 #merchant h3 {
     margin-bottom: 10px;
-    color: #555;
+    color: var(--text-color);
     font-size: 1.1rem;
 }
 
@@ -257,45 +410,45 @@ h2, h3 {
     display: flex;
     gap: 10px;
     padding: 10px;
-    background-color: #fff;
+    background-color: var(--card-bg);
     border-radius: 8px;
     flex-wrap: wrap;
 }
 
 .merchant-item {
     padding: 8px 15px;
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .merchant-item:hover {
-    background-color: #f0f0f0;
+    background-color: var(--card-bg);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 /* 이벤트 선택 */
 #event-choices {
     display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 /* 설명 영역 */
 #description {
-    background-color: #fff;
+    background-color: var(--card-bg);
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     margin-bottom: 20px;
     min-height: 120px;
     position: relative;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 10px var(--shadow-color);
     font-size: 1.1rem;
     line-height: 1.6;
     display: flex;
@@ -305,9 +458,9 @@ h2, h3 {
 }
 
 #description.boss-floor {
-    background-color: #fff2f2;
-    border-color: #ffcccc;
-    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.1);
+    background-color: rgba(231, 76, 60, 0.1);
+    border-color: rgba(231, 76, 60, 0.3);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
 }
 
 .boss-warning {
@@ -316,9 +469,58 @@ h2, h3 {
     display: block;
     margin-bottom: 10px;
     font-size: 1.2em;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* 데미지 텍스트 애니메이션 */
+.damage-text {
+    animation: damage-shake 0.5s;
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+@keyframes damage-shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+.heal-text {
+    animation: heal-pulse 1s;
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+@keyframes heal-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.gold-text {
+    animation: gold-bounce 0.5s;
+    color: var(--neutral-color);
+    font-weight: bold;
+}
+
+@keyframes gold-bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
 }
 
 /* 캐릭터 및 보스 이미지 */
+#character-display {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
 .character-image, .boss-image {
     height: 120px;
     width: 120px;
@@ -327,9 +529,20 @@ h2, h3 {
     justify-content: center;
     align-items: center;
     font-size: 5rem;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
     border-radius: 50%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px var(--shadow-color);
+    transition: all 0.3s;
+}
+
+.boss-image {
+    animation: boss-entrance 1s;
+}
+
+@keyframes boss-entrance {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .warrior-character::after {
@@ -406,18 +619,18 @@ button {
     flex: 1;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 10px var(--shadow-color);
 }
 
 button:hover {
     background-color: #3a5983;
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
 
 button:disabled {
@@ -468,21 +681,21 @@ button:disabled {
 
 /* 로그 */
 #log-container {
-    background-color: #f9f9f9;
+    background-color: var(--card-bg);
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     max-height: 300px;
     overflow-y: auto;
     margin-top: 30px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 10px var(--shadow-color);
 }
 
 #log-container h3 {
     margin-bottom: 15px;
     font-size: 1.2rem;
-    color: #555;
-    border-bottom: 1px solid #ddd;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 10px;
 }
 
@@ -492,13 +705,13 @@ button:disabled {
 
 #log p {
     padding: 8px 12px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
     border-radius: 5px;
     margin-bottom: 5px;
 }
 
 #log p:nth-child(odd) {
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
 }
 
 #log p:contains("⚔️") {
@@ -510,6 +723,81 @@ button:disabled {
     color: var(--success-color);
     font-weight: bold;
     font-size: 1.1em;
+}
+
+/* 모달 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    text-align: center;
+    transform: translateY(20px);
+    transition: all 0.3s;
+}
+
+.modal-overlay.active .modal {
+    transform: translateY(0);
+}
+
+.modal-header {
+    margin-bottom: 15px;
+    color: var(--text-color);
+    position: relative;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+.modal-content {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.modal-close {
+    background-color: var(--primary-color);
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.modal-close:hover {
+    background-color: #3a5983;
+    transform: translateY(-3px);
 }
 
 /* 유틸리티 클래스 */
@@ -526,7 +814,7 @@ button:disabled {
     border-radius: 8px;
     color: #721c24;
     animation: fadeIn 0.5s ease-in;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 @keyframes fadeIn {
@@ -551,5 +839,14 @@ button:disabled {
     
     #choices, #event-choices {
         flex-direction: column;
+    }
+    
+    #stats {
+        gap: 10px;
+    }
+    
+    .stat-circle {
+        width: 70px;
+        height: 70px;
     }
 } 
