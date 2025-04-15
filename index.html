@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>던전 탐험가</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>던전 탐험가</h1>
+        
+        <!-- 직업 선택 섹션 -->
+        <div id="class-selection">
+            <h2>직업을 선택하세요</h2>
+            <div class="class-options">
+                <div class="class-option">
+                    <h3>전사</h3>
+                    <div class="class-character warrior-icon"></div>
+                    <p>체력 +30 보너스로 시작합니다.</p>
+                    <button id="warrior-btn" class="class-btn">선택</button>
+                </div>
+                <div class="class-option">
+                    <h3>도적</h3>
+                    <div class="class-character rogue-icon"></div>
+                    <p>운 +10 보너스로 시작합니다.</p>
+                    <button id="rogue-btn" class="class-btn">선택</button>
+                </div>
+                <div class="class-option">
+                    <h3>마법사</h3>
+                    <div class="class-character wizard-icon"></div>
+                    <p>각 문의 결과를 예지하고 위험 시 텔레포트 할 수 있습니다.</p>
+                    <button id="wizard-btn" class="class-btn">선택</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game-container" class="hidden">
+            <div id="stats">
+                <div class="stat-row">
+                    <p>현재 체력: <span id="hp">100</span> / 금화: <span id="gold">0</span></p>
+                    <p>운: <span id="luck">10</span> / 직업: <span id="player-class">없음</span></p>
+                </div>
+                <p>현재 층: <span id="floor">1</span></p>
+            </div>
+            
+            <div id="inventory">
+                <h3>인벤토리 (<span id="inventory-count">0</span>/3)</h3>
+                <div id="items"></div>
+                <div id="merchant" class="hidden">
+                    <h3>상인</h3>
+                    <div id="merchant-items"></div>
+                </div>
+            </div>
+            
+            <div id="character-display">
+                <div id="player-character" class="character-image"></div>
+                <div id="boss-character" class="boss-image hidden"></div>
+            </div>
+            
+            <div id="description">
+                <p id="current-description">어두운 던전에 들어왔습니다. 두 개의 문이 보입니다.</p>
+            </div>
+            
+            <div id="choices">
+                <button id="choice1">왼쪽 문 열기</button>
+                <button id="choice2">오른쪽 문 열기</button>
+            </div>
+            
+            <div id="event-choices" class="hidden">
+                <button id="event-choice1"></button>
+                <button id="event-choice2"></button>
+            </div>
+            
+            <div id="game-over" class="hidden">
+                <h2>게임 오버!</h2>
+                <p>당신은 <span id="final-floor">0</span>층까지 도달했습니다.</p>
+                <p>획득한 금화: <span id="final-gold">0</span></p>
+                <button id="restart-button">다시 시작</button>
+            </div>
+        </div>
+        
+        <div id="log-container" class="hidden">
+            <h3>모험 기록</h3>
+            <div id="log"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
