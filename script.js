@@ -14,7 +14,8 @@ const gameState = {
     hasShield: false,
     canTeleport: false,
     leftPrediction: '',
-    rightPrediction: ''
+    rightPrediction: '',
+    theme: 'default'
 };
 
 // DOM 요소들
@@ -48,7 +49,16 @@ const elements = {
     choices: document.getElementById('choices'),
     playerCharacter: document.getElementById('player-character'),
     bossCharacter: document.getElementById('boss-character'),
-    characterDisplay: document.getElementById('character-display')
+    characterDisplay: document.getElementById('character-display'),
+    hpCircle: document.querySelector('.hp-circle'),
+    goldCircle: document.querySelector('.gold-circle'),
+    luckCircle: document.querySelector('.luck-circle'),
+    defaultTheme: document.getElementById('default-theme'),
+    pastelTheme: document.getElementById('pastel-theme'),
+    darkTheme: document.getElementById('dark-theme'),
+    rewardModal: document.getElementById('reward-modal'),
+    rewardContent: document.getElementById('reward-content'),
+    modalClose: document.querySelector('.modal-close')
 };
 
 // 이벤트 설명들
@@ -168,11 +178,25 @@ elements.warriorBtn.addEventListener('click', () => selectClass('전사'));
 elements.rogueBtn.addEventListener('click', () => selectClass('도적'));
 elements.wizardBtn.addEventListener('click', () => selectClass('마법사'));
 
+// 테마 변경 이벤트 리스너
+elements.defaultTheme.addEventListener('click', () => changeTheme('default'));
+elements.pastelTheme.addEventListener('click', () => changeTheme('pastel'));
+elements.darkTheme.addEventListener('click', () => changeTheme('dark'));
+
+// 모달 닫기 이벤트 리스너
+elements.modalClose.addEventListener('click', closeModal);
+
 // 게임 시작 시 직업 선택 화면만 표시
 function initGame() {
     elements.classSelection.classList.remove('hidden');
     elements.gameContainer.classList.add('hidden');
     elements.logContainer.classList.add('hidden');
+    
+    // 저장된 테마가 있으면 적용
+    const savedTheme = localStorage.getItem('dungeon-theme');
+    if (savedTheme) {
+        changeTheme(savedTheme);
+    }
 }
 
 // 직업 선택 함수
@@ -219,107 +243,129 @@ elements.restartButton.addEventListener('click', restartGame);
 
 // 다음 층 이벤트 생성
 function generateNextEvent() {
-    // 현재 이벤트 초기화
-    gameState.currentEvent = null;
-    elements.eventChoices.classList.add('hidden');
-    elements.choices.classList.remove('hidden');
+    // 페이드 효과 적용
+    elements.gameContainer.classList.add('fade-out');
     
-    // 상인 UI 숨기기
-    elements.merchant.classList.add('hidden');
-    gameState.isMerchantOpen = false;
-    
-    // 보스 캐릭터 숨기기 및 플레이어 캐릭터 표시
-    elements.bossCharacter.classList.add('hidden');
-    elements.playerCharacter.classList.remove('hidden');
-    
-    // 보스 층 체크
-    if (gameState.floor % 10 === 0 && gameState.floor <= 100) {
-        // 보스층
-        const bossIndex = (gameState.floor / 10) - 1;
-        elements.description.innerHTML = `<span class="boss-warning">⚠️ 보스 층 ⚠️</span><br>${bossDescriptions[bossIndex]}`;
-        elements.description.classList.add('boss-floor');
-        showChoices("싸운다", "도망친다");
+    setTimeout(() => {
+        // 현재 이벤트 초기화
+        gameState.currentEvent = null;
+        elements.eventChoices.classList.add('hidden');
+        elements.choices.classList.remove('hidden');
         
-        // 보스 캐릭터 표시
-        elements.bossCharacter.classList.remove('hidden');
+        // 상인 UI 숨기기
+        elements.merchant.classList.add('hidden');
+        gameState.isMerchantOpen = false;
         
-        // 보스 타입에 따른 이미지 설정
-        const bossClasses = [
-            'boss-slime',      // 10층
-            'boss-knight',     // 20층
-            'boss-wizard',     // 30층
-            'boss-poison',     // 40층
-            'boss-minotaur',   // 50층
-            'boss-golem',      // 60층
-            'boss-assassin',   // 70층
-            'boss-dragon',     // 80층
-            'boss-gatekeeper', // 90층
-            'boss-lord'        // 100층
-        ];
+        // 보스 캐릭터 숨기기 및 플레이어 캐릭터 표시
+        elements.bossCharacter.classList.add('hidden');
+        elements.playerCharacter.classList.remove('hidden');
         
-        elements.bossCharacter.className = 'boss-image ' + bossClasses[bossIndex];
-    } else {
-        // 일반 이벤트 또는 특별 이벤트 결정
-        elements.description.classList.remove('boss-floor');
-        const eventRoll = Math.random();
-        
-        if (eventRoll < 0.2) {
-            // 특별 이벤트 (상자, 상인, 포탈 등)
-            const specialEvent = getRandomItem(specialEvents);
-            gameState.currentEvent = specialEvent;
+        // 보스 층 체크
+        if (gameState.floor % 10 === 0 && gameState.floor <= 100) {
+            // 보스층
+            const bossIndex = (gameState.floor / 10) - 1;
+            elements.description.innerHTML = `<span class="boss-warning">⚠️ 보스 층 ⚠️</span><br>${bossDescriptions[bossIndex]}`;
+            elements.description.classList.add('boss-floor');
+            showChoices("싸운다", "도망친다");
             
-            elements.description.textContent = `${gameState.floor}층: ${specialEvent.description}`;
-            elements.choices.classList.add('hidden');
-            elements.eventChoices.classList.remove('hidden');
+            // 보스 캐릭터 표시
+            elements.bossCharacter.classList.remove('hidden');
             
-            elements.eventChoice1.textContent = specialEvent.choices[0];
-            elements.eventChoice2.textContent = specialEvent.choices[1];
+            // 보스 타입에 따른 이미지 설정
+            const bossClasses = [
+                'boss-slime',      // 10층
+                'boss-knight',     // 20층
+                'boss-wizard',     // 30층
+                'boss-poison',     // 40층
+                'boss-minotaur',   // 50층
+                'boss-golem',      // 60층
+                'boss-assassin',   // 70층
+                'boss-dragon',     // 80층
+                'boss-gatekeeper', // 90층
+                'boss-lord'        // 100층
+            ];
+            
+            elements.bossCharacter.className = 'boss-image ' + bossClasses[bossIndex];
+            
+            // 보스 등장 시 화면 진동 효과
+            setTimeout(() => {
+                elements.gameContainer.classList.add('shake');
+                
+                // 효과음 재생 (필요시)
+                playSound('boss');
+                
+                // 진동 효과 제거
+                setTimeout(() => {
+                    elements.gameContainer.classList.remove('shake');
+                }, 500);
+            }, 300);
         } else {
-            // 일반 이벤트
-            elements.description.textContent = `${gameState.floor}층: ${getRandomItem(eventDescriptions)}`;
+            // 일반 이벤트 또는 특별 이벤트 결정
+            elements.description.classList.remove('boss-floor');
+            const eventRoll = Math.random();
             
-            // 마법사인 경우 각 문마다 다른 확률 적용 및 표시
-            if (gameState.playerClass === '마법사') {
-                // 마법사는 한 쪽 문의 결과를 예지할 수 있음
-                const leftProb = Math.random();
-                const rightProb = Math.random();
+            if (eventRoll < 0.2) {
+                // 특별 이벤트 (상자, 상인, 포탈 등)
+                const specialEvent = getRandomItem(specialEvents);
+                gameState.currentEvent = specialEvent;
                 
-                let leftResult, rightResult;
+                elements.description.textContent = `${gameState.floor}층: ${specialEvent.description}`;
+                elements.choices.classList.add('hidden');
+                elements.eventChoices.classList.remove('hidden');
                 
-                if (leftProb < 0.4) {
-                    leftResult = "성공";
-                } else if (leftProb < 0.7) {
-                    leftResult = "실패";
-                } else {
-                    leftResult = "중립";
-                }
-                
-                if (rightProb < 0.4) {
-                    rightResult = "성공";
-                } else if (rightProb < 0.7) {
-                    rightResult = "실패";
-                } else {
-                    rightResult = "중립";
-                }
-                
-                elements.choice1.innerHTML = `왼쪽 문 열기<span class="success-chance">${leftResult} 예지</span>`;
-                elements.choice2.innerHTML = `오른쪽 문 열기<span class="success-chance">${rightResult} 예지</span>`;
-                
-                // 결과를 게임 상태에 저장
-                gameState.leftPrediction = leftResult;
-                gameState.rightPrediction = rightResult;
+                elements.eventChoice1.textContent = specialEvent.choices[0];
+                elements.eventChoice2.textContent = specialEvent.choices[1];
             } else {
-                elements.choice1.textContent = "왼쪽 문 열기";
-                elements.choice2.textContent = "오른쪽 문 열기";
-            }
-            
-            // 마법사의 텔레포트 능력이 있으면 표시
-            if (gameState.playerClass === '마법사' && gameState.canTeleport) {
-                elements.choice1.innerHTML += `<span class="teleport-available">⚡ 텔레포트 가능</span>`;
-                elements.choice2.innerHTML += `<span class="teleport-available">⚡ 텔레포트 가능</span>`;
+                // 일반 이벤트
+                elements.description.textContent = `${gameState.floor}층: ${getRandomItem(eventDescriptions)}`;
+                
+                // 마법사인 경우 각 문마다 다른 확률 적용 및 표시
+                if (gameState.playerClass === '마법사') {
+                    // 마법사는 한 쪽 문의 결과를 예지할 수 있음
+                    const leftProb = Math.random();
+                    const rightProb = Math.random();
+                    
+                    let leftResult, rightResult;
+                    
+                    if (leftProb < 0.4) {
+                        leftResult = "성공";
+                    } else if (leftProb < 0.7) {
+                        leftResult = "실패";
+                    } else {
+                        leftResult = "중립";
+                    }
+                    
+                    if (rightProb < 0.4) {
+                        rightResult = "성공";
+                    } else if (rightProb < 0.7) {
+                        rightResult = "실패";
+                    } else {
+                        rightResult = "중립";
+                    }
+                    
+                    elements.choice1.innerHTML = `왼쪽 문 열기<span class="success-chance">${leftResult} 예지</span>`;
+                    elements.choice2.innerHTML = `오른쪽 문 열기<span class="success-chance">${rightResult} 예지</span>`;
+                    
+                    // 결과를 게임 상태에 저장
+                    gameState.leftPrediction = leftResult;
+                    gameState.rightPrediction = rightResult;
+                } else {
+                    elements.choice1.textContent = "왼쪽 문 열기";
+                    elements.choice2.textContent = "오른쪽 문 열기";
+                }
+                
+                // 마법사의 텔레포트 능력이 있으면 표시
+                if (gameState.playerClass === '마법사' && gameState.canTeleport) {
+                    elements.choice1.innerHTML += `<span class="teleport-available">⚡ 텔레포트 가능</span>`;
+                    elements.choice2.innerHTML += `<span class="teleport-available">⚡ 텔레포트 가능</span>`;
+                }
             }
         }
-    }
+        
+        // 페이드 인 효과 적용
+        elements.gameContainer.classList.remove('fade-in');
+        
+    }, 500); // 페이드 아웃 지연 시간
 }
 
 // 선택 버튼 텍스트 변경
@@ -331,6 +377,9 @@ function showChoices(choice1Text, choice2Text) {
 // 선택 처리 함수
 function handleChoice(direction) {
     if (gameState.isGameOver) return;
+    
+    // 효과음 재생
+    playSound('button');
     
     // 보스 층 체크
     if (gameState.floor % 10 === 0) {
@@ -356,9 +405,15 @@ function handleChoice(direction) {
             const itemKeys = Object.keys(items);
             const randomItem = items[itemKeys[Math.floor(Math.random() * itemKeys.length)]];
             addItemToInventory(randomItem);
-            resultText = `${result} 금화 +${goldChange}, ${randomItem.emoji} ${randomItem.name} 획득!`;
+            resultText = `${result} <span class="gold-text">금화 +${goldChange}</span>, ${randomItem.emoji} ${randomItem.name} 획득!`;
+            
+            // 모달로 보상 표시
+            showRewardModal(`${randomItem.emoji} ${randomItem.name} 획득!`, `${result} 금화 ${goldChange}개와 함께 ${randomItem.name}을(를) 획득했습니다!<br><br>${randomItem.description}`);
         } else {
-            resultText = `${result} 금화 +${goldChange}`;
+            resultText = `${result} <span class="gold-text">금화 +${goldChange}</span>`;
+            
+            // 골드 획득 효과음
+            playSound('gold');
         }
     } else if (randomValue < successProbability + failureProbability) {
         // 실패
@@ -373,6 +428,9 @@ function handleChoice(direction) {
             if (confirm('⚡ 위험한 상황입니다! 텔레포트 능력을 사용하여 피해를 회피하시겠습니까?')) {
                 gameState.canTeleport = false;
                 addToLog(`⚡ 텔레포트 능력을 사용하여 위험에서 탈출했습니다!`);
+                
+                // 텔레포트 효과음
+                playSound('teleport');
                 
                 // 텔레포트 후에는 중립 결과로 변경
                 result = getRandomItem(neutralResults);
@@ -392,16 +450,22 @@ function handleChoice(direction) {
         if (gameState.hasShield) {
             damage = Math.floor(damage * 0.5);
             gameState.hasShield = false;
-            resultText = `${result} 🛡️ 방어력으로 피해 감소! 체력 -${damage}`;
+            resultText = `${result} 🛡️ 방어력으로 피해 감소! <span class="damage-text">체력 -${damage}</span>`;
         } else {
-            resultText = `${result} 체력 -${damage}`;
+            resultText = `${result} <span class="damage-text">체력 -${damage}</span>`;
         }
         
         hpChange = -damage;
+        
+        // 피해 효과음
+        playSound('damage');
     } else {
         // 중립
         result = getRandomItem(neutralResults);
         resultText = result;
+        
+        // 중립 효과음
+        playSound('neutral');
     }
     
     // 층수 증가
@@ -712,6 +776,9 @@ function updateUI() {
     elements.floor.textContent = gameState.floor;
     elements.playerClass.textContent = gameState.playerClass;
     
+    // 스탯 원형 게이지 업데이트
+    updateStatCircles();
+    
     // 인벤토리 업데이트
     updateInventoryUI();
     
@@ -732,6 +799,21 @@ function updateUI() {
     
     // 캐릭터 클래스 업데이트
     updateCharacterDisplay();
+}
+
+// 스탯 원형 게이지 업데이트
+function updateStatCircles() {
+    // 체력 게이지
+    const hpPercent = Math.min(100, Math.max(0, (gameState.hp / gameState.maxHp) * 100));
+    elements.hpCircle.style.setProperty('--percent', `${hpPercent}%`);
+    
+    // 골드 게이지 (최대 300으로 가정)
+    const goldPercent = Math.min(100, (gameState.gold / 300) * 100);
+    elements.goldCircle.style.setProperty('--percent', `${goldPercent}%`);
+    
+    // 운 게이지 (최대 50으로 가정)
+    const luckPercent = Math.min(100, (gameState.luck / 50) * 100);
+    elements.luckCircle.style.setProperty('--percent', `${luckPercent}%`);
 }
 
 // 캐릭터 디스플레이 업데이트
@@ -818,4 +900,54 @@ function restartGame() {
 function getRandomItem(array) {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];
+}
+
+// 테마 변경 함수
+function changeTheme(theme) {
+    // 기존 테마 클래스 제거
+    document.body.classList.remove('pastel-theme', 'dark-theme');
+    
+    // 테마 버튼 액티브 상태 초기화
+    elements.defaultTheme.classList.remove('active');
+    elements.pastelTheme.classList.remove('active');
+    elements.darkTheme.classList.remove('active');
+    
+    // 선택한 테마 적용
+    if (theme === 'pastel') {
+        document.body.classList.add('pastel-theme');
+        elements.pastelTheme.classList.add('active');
+    } else if (theme === 'dark') {
+        document.body.classList.add('dark-theme');
+        elements.darkTheme.classList.add('active');
+    } else {
+        elements.defaultTheme.classList.add('active');
+    }
+    
+    // 테마 저장
+    localStorage.setItem('dungeon-theme', theme);
+    gameState.theme = theme;
+}
+
+// 모달 표시 함수
+function showRewardModal(title, content) {
+    // 모달 제목과 내용 설정
+    const modalHeader = elements.rewardModal.querySelector('.modal-header h3');
+    modalHeader.textContent = title;
+    elements.rewardContent.innerHTML = content;
+    
+    // 모달 표시
+    elements.rewardModal.classList.add('active');
+}
+
+// 모달 닫기 함수
+function closeModal() {
+    elements.rewardModal.classList.remove('active');
+}
+
+// 효과음 재생 함수
+function playSound(type) {
+    // 오디오 기능은 나중에 구현 가능
+    // 예시:
+    // const audio = new Audio(`sounds/${type}.mp3`);
+    // audio.play();
 } 

@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>던전 탐험가</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <h1>던전 탐험가</h1>
+        
+        <!-- 테마 컨트롤 -->
+        <div id="theme-controls">
+            <button class="theme-btn active" id="default-theme" title="기본 테마">🏰</button>
+            <button class="theme-btn" id="pastel-theme" title="파스텔 테마">🍦</button>
+            <button class="theme-btn" id="dark-theme" title="다크 모드">🌙</button>
+        </div>
         
         <!-- 직업 선택 섹션 -->
         <div id="class-selection">
@@ -36,12 +44,28 @@
         </div>
         
         <div id="game-container" class="hidden">
+            <!-- 스탯 섹션 - 원형 게이지로 변경 -->
             <div id="stats">
-                <div class="stat-row">
-                    <p>현재 체력: <span id="hp">100</span> / 금화: <span id="gold">0</span></p>
-                    <p>운: <span id="luck">10</span> / 직업: <span id="player-class">없음</span></p>
+                <div class="stat-circle hp-circle">
+                    <span class="stat-value" id="hp">100</span>
+                    <span class="stat-label">체력</span>
                 </div>
-                <p>현재 층: <span id="floor">1</span></p>
+                
+                <div class="stat-circle gold-circle">
+                    <span class="stat-value" id="gold">0</span>
+                    <span class="stat-label">금화</span>
+                </div>
+                
+                <div class="stat-circle luck-circle">
+                    <span class="stat-value" id="luck">10</span>
+                    <span class="stat-label">운</span>
+                </div>
+                
+                <div class="player-info">
+                    <span>직업: <span id="player-class">없음</span></span>
+                </div>
+                
+                <p class="floor-display">현재 층: <span id="floor">1</span></p>
             </div>
             
             <div id="inventory">
@@ -83,6 +107,21 @@
         <div id="log-container" class="hidden">
             <h3>모험 기록</h3>
             <div id="log"></div>
+        </div>
+        
+        <!-- 모달 -->
+        <div class="modal-overlay" id="reward-modal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>보상 획득!</h3>
+                </div>
+                <div class="modal-content" id="reward-content">
+                    보상 내용이 여기에 표시됩니다.
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-close">확인</button>
+                </div>
+            </div>
         </div>
     </div>
 
