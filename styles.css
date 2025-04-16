@@ -284,6 +284,7 @@ h2, h3 {
     border: 1px solid var(--border-color);
     box-shadow: 0 8px 20px var(--shadow-color);
     transition: opacity 0.5s ease, transform 0.3s ease;
+    opacity: 1;
 }
 
 #game-container.fade-out {
@@ -308,46 +309,37 @@ h2, h3 {
 
 /* 스탯 섹션 */
 #stats {
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stat-row {
     display: flex;
     justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 20px;
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 5px 15px var(--shadow-color);
+    gap: 15px;
 }
 
-.stat-circle {
-    position: relative;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background-color: var(--background-color);
+.player-info-row {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 0 15px var(--shadow-color);
-    transition: transform 0.3s;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
 }
 
-.stat-circle:hover {
-    transform: scale(1.05);
-}
-
-.stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.stat-label {
+.player-info {
+    flex: 1;
+    min-width: 100px;
+    background-color: var(--background-color);
+    padding: 8px 12px;
+    border-radius: 12px;
+    text-align: center;
     font-size: 0.9rem;
-    color: var(--text-color);
-    margin-top: 5px;
+    box-shadow: 0 3px 6px var(--shadow-color);
+}
+
+.level-circle {
+    background: conic-gradient(var(--primary-color) var(--percent, 100%), var(--background-color) 0);
 }
 
 .hp-circle {
@@ -374,17 +366,6 @@ h2, h3 {
 .floor-display span {
     color: var(--primary-color);
     font-size: 1.3em;
-}
-
-.player-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-top: 10px;
 }
 
 /* 인벤토리 */
@@ -1026,5 +1007,791 @@ button:disabled::before {
     
     button {
         padding: 12px 20px;
+    }
+}
+
+/* 보스 체력 바 스타일 */
+.boss-hp-bar {
+    height: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    margin: 15px 0;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #555;
+}
+
+.boss-hp-fill {
+    height: 100%;
+    background: linear-gradient(to right, #ff3838, #ff5252);
+    transition: width 0.3s ease;
+    border-radius: 8px;
+}
+
+.boss-hp-text {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #ff3838;
+}
+
+/* 보스 체력 바 애니메이션 */
+@keyframes pulse-hp {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+/* 보스 피격 효과 */
+.boss-hit {
+    animation: hit-effect 0.5s ease-out;
+}
+
+@keyframes hit-effect {
+    0% { transform: scale(1); }
+    20% { transform: scale(0.9); filter: brightness(1.5); }
+    40% { transform: scale(1.05); filter: brightness(1.2); }
+    60% { transform: scale(0.95); filter: brightness(1.1); }
+    80% { transform: scale(1.02); filter: brightness(1.05); }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* 데미지 팝업 효과 */
+.damage-popup {
+    position: absolute;
+    color: #ff3838;
+    font-weight: bold;
+    font-size: 24px;
+    animation: damage-float 1s ease-out forwards;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    pointer-events: none;
+}
+
+@keyframes damage-float {
+    0% { 
+        top: 50%; 
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+    }
+    20% { 
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+    }
+    100% { 
+        top: 0;
+        transform: translate(-50%, -100%) scale(1);
+        opacity: 0;
+    }
+}
+
+/* 보스 상태 효과 */
+.boss-wounded {
+    filter: grayscale(30%);
+}
+
+.boss-critical {
+    filter: grayscale(50%) sepia(0.5);
+    animation: boss-critical 1.5s infinite;
+}
+
+@keyframes boss-critical {
+    0%, 100% { transform: scale(0.85) rotate(0deg); }
+    25% { transform: scale(0.85) rotate(-5deg); }
+    75% { transform: scale(0.85) rotate(5deg); }
+}
+
+/* 체력 변화 시 숫자 애니메이션 */
+.boss-hp-text {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #ff3838;
+    transition: color 0.3s;
+}
+
+/* 보스 체력 바 향상된 스타일 */
+.boss-hp-bar {
+    height: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    margin: 15px 0;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #555;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.boss-hp-fill {
+    height: 100%;
+    background: linear-gradient(to right, #ff3838, #ff5252);
+    transition: width 0.3s ease, background 0.3s;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.boss-hp-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        rgba(0, 0, 0, 0.1) 51%, 
+        rgba(0, 0, 0, 0.2) 100%);
+}
+
+/* 보스 캐릭터 확장 스타일 */
+.boss-image {
+    transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+/* 상단 UI 섹션 */
+#top-ui {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+/* 스탯 섹션 업데이트 */
+#stats {
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+}
+
+.player-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.player-info {
+    flex: 1;
+    min-width: 100px;
+    background-color: var(--background-color);
+    padding: 8px 12px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 0.9rem;
+    box-shadow: 0 3px 6px var(--shadow-color);
+}
+
+.level-circle {
+    background: conic-gradient(var(--primary-color) var(--percent, 100%), var(--background-color) 0);
+}
+
+/* 경험치 바 */
+.exp-bar-container {
+    width: 100%;
+    height: 10px;
+    background-color: var(--background-color);
+    border-radius: 5px;
+    margin-top: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px var(--shadow-color);
+}
+
+.exp-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #9b59b6, #8e44ad);
+    transition: width 0.5s ease;
+}
+
+/* 중앙 UI 섹션 */
+#middle-ui {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+#description-container {
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 20px var(--shadow-color);
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#current-description {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    text-align: center;
+}
+
+/* 하단 UI 섹션 */
+#bottom-ui {
+    margin-bottom: 25px;
+}
+
+/* 탭 컨테이너 */
+#tabs-container {
+    margin-top: 25px;
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 0;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    background-color: var(--card-bg);
+    transform: none;
+}
+
+.tab-btn.active {
+    background-color: var(--card-bg);
+    border-bottom: 3px solid var(--primary-color);
+    font-weight: 700;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 인벤토리 탭 */
+#inventory-content {
+    min-height: 200px;
+}
+
+#inventory-content h3 {
+    margin-bottom: 15px;
+}
+
+/* 장비 탭 */
+#equipment-content {
+    min-height: 200px;
+}
+
+#equipment-slots {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.equipment-slot {
+    flex: 1;
+    padding: 15px;
+    background-color: var(--background-color);
+    border-radius: 15px;
+    text-align: center;
+    border: 1px dashed var(--border-color);
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.equipment-slot:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px var(--shadow-color);
+}
+
+.slot-name {
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.slot-empty {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.equipment-item {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.item-common {
+    background-color: #eee;
+    color: #333;
+}
+
+.item-uncommon {
+    background-color: #a5d6a7;
+    color: #1b5e20;
+}
+
+.item-rare {
+    background-color: #90caf9;
+    color: #0d47a1;
+}
+
+.item-epic {
+    background-color: #ce93d8;
+    color: #4a148c;
+}
+
+.item-legendary {
+    background-color: #ffcc80;
+    color: #e65100;
+}
+
+/* 아이템 조합 영역 */
+#crafting-area {
+    margin-top: 25px;
+    padding: 15px;
+    background-color: var(--background-color);
+    border-radius: 15px;
+    border: 1px dashed var(--border-color);
+}
+
+#crafting-area h4 {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#crafting-slots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.crafting-slot {
+    width: 80px;
+    height: 80px;
+    background-color: var(--card-bg);
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #999;
+}
+
+#craft-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#craft-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 스킬 탭 */
+#skills-content {
+    min-height: 200px;
+}
+
+#skill-points {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+#skill-tree {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.skill-node {
+    padding: 15px;
+    background-color: var(--background-color);
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+.skill-node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px var(--shadow-color);
+}
+
+.skill-node.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.skill-node.locked:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.skill-node.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.skill-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.skill-name {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.skill-desc {
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+.skill-level {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.level-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ddd;
+}
+
+.level-dot.filled {
+    background-color: var(--primary-color);
+}
+
+.skill-node.active .level-dot.filled {
+    background-color: white;
+}
+
+/* 레벨업 모달 */
+#levelup-modal .modal {
+    background-color: var(--card-bg);
+    border: 5px solid #9b59b6;
+}
+
+#levelup-modal .modal-header h3 {
+    color: #9b59b6;
+}
+
+#levelup-modal .modal-header::after {
+    background: #9b59b6;
+}
+
+#levelup-modal .modal-close {
+    background-color: #9b59b6;
+}
+
+#levelup-modal .modal-close:hover {
+    background-color: #8e44ad;
+}
+
+/* 도전과제 달성 모달 */
+#achievement-modal .modal {
+    background-color: var(--card-bg);
+    border: 5px solid var(--success-color);
+}
+
+#achievement-modal .modal-header h3 {
+    color: var(--success-color);
+}
+
+#achievement-modal .modal-header::after {
+    background: var(--success-color);
+}
+
+#achievement-modal .modal-close {
+    background-color: var(--success-color);
+}
+
+#achievement-modal .modal-close:hover {
+    background-color: #219653;
+}
+
+/* 반응형 디자인 업데이트 */
+@media (max-width: 768px) {
+    .stat-row {
+        flex-wrap: wrap;
+    }
+
+    .player-info-row {
+        flex-direction: column;
+    }
+
+    .equipment-slots {
+        flex-direction: column;
+    }
+
+    #skill-tree {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .achievement-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .achievement-label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* 챌린지 모드 스타일 삭제 */
+/* ... existing code ... */
+
+/* 장비 아이템 스타일 */
+.equipment-item {
+    background-color: var(--card-bg);
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 3px 6px var(--shadow-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.equipment-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px var(--shadow-color);
+}
+
+.equipment-stats {
+    font-size: 0.85rem;
+    margin-top: 5px;
+    opacity: 0.8;
+}
+
+/* 장비 인벤토리 스타일 */
+.equipment-inventory {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 15px 0;
+    padding: 10px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    box-shadow: inset 0 0 8px var(--shadow-color);
+}
+
+.empty-inventory {
+    text-align: center;
+    padding: 15px;
+    color: var(--text-color);
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* 장비 슬롯 스타일 개선 */
+.equipment-slot {
+    background-color: var(--background-color);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.equipment-slot:hover {
+    box-shadow: 0 5px 15px var(--shadow-color);
+    transform: translateY(-2px);
+}
+
+.slot-name {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+}
+
+.slot-empty {
+    text-align: center;
+    padding: 15px;
+    background-color: var(--card-bg);
+    border-radius: 5px;
+    border: 1px dashed var(--border-color);
+    color: var(--text-color);
+    opacity: 0.6;
+}
+
+/* 조합 영역 스타일 */
+#crafting-area {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+#crafting-area h4 {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#crafting-slots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.crafting-slot {
+    width: 120px;
+    height: 80px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    border: 1px dashed var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: inset 0 0 8px var(--shadow-color);
+}
+
+#craft-btn {
+    margin-top: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+#craft-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+#craft-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 장비 비교 스타일 */
+.equipment-comparison {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+/* 모달 액션 버튼 */
+.modal-action-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.modal-action-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+/* 레어도 색상 */
+.common-rarity {
+    color: #a6a6a6 !important;
+}
+
+.rare-rarity {
+    color: #3498db !important;
+}
+
+.legendary-rarity {
+    color: #e67e22 !important;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .equipment-slot {
+        padding: 10px;
+    }
+    
+    .crafting-slot {
+        width: 100px;
+        height: 70px;
+    }
+    
+    #crafting-slots {
+        gap: 10px;
+    }
+    
+    .equipment-stats {
+        font-size: 0.75rem;
     }
 } 

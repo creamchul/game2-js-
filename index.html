@@ -44,62 +44,143 @@
         </div>
         
         <div id="game-container" class="hidden">
-            <!-- 스탯 섹션 - 원형 게이지로 변경 -->
-            <div id="stats">
-                <div class="stat-circle hp-circle">
-                    <span class="stat-value" id="hp">100</span>
-                    <span class="stat-label">체력</span>
+            <!-- 상단 UI 섹션 -->
+            <div id="top-ui">
+                <!-- 스탯 섹션 - 확장된 정보 -->
+                <div id="stats">
+                    <div class="stat-row">
+                        <div class="stat-circle hp-circle">
+                            <span class="stat-value" id="hp">100</span>
+                            <span class="stat-label">체력</span>
+                        </div>
+                        
+                        <div class="stat-circle gold-circle">
+                            <span class="stat-value" id="gold">0</span>
+                            <span class="stat-label">금화</span>
+                        </div>
+                        
+                        <div class="stat-circle luck-circle">
+                            <span class="stat-value" id="luck">10</span>
+                            <span class="stat-label">운</span>
+                        </div>
+                        
+                        <div class="stat-circle level-circle">
+                            <span class="stat-value" id="level">1</span>
+                            <span class="stat-label">레벨</span>
+                        </div>
+                    </div>
+                    
+                    <div class="player-info-row">
+                        <div class="player-info">
+                            <span>직업: <span id="player-class">없음</span></span>
+                        </div>
+                        <div class="player-info">
+                            <span>층: <span id="floor">1</span></span>
+                        </div>
+                        <div class="player-info">
+                            <span>경험치: <span id="exp">0</span>/<span id="exp-max">100</span></span>
+                        </div>
+                        <div class="player-info">
+                            <span>공격력: <span id="attack">10</span></span>
+                        </div>
+                        <div class="player-info">
+                            <span>방어력: <span id="defense">0</span></span>
+                        </div>
+                    </div>
+
+                    <!-- 경험치 바 -->
+                    <div class="exp-bar-container">
+                        <div class="exp-bar-fill" id="exp-bar"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 중앙 UI 섹션 -->
+            <div id="middle-ui">
+                <div id="character-display">
+                    <div id="player-character" class="character-image"></div>
+                    <div id="boss-character" class="boss-image hidden"></div>
+                    <div id="boss-hp-container" class="hidden">
+                        <div class="boss-hp-text">보스 체력: <span id="boss-hp-value">100</span>/<span id="boss-max-hp">100</span></div>
+                        <div class="boss-hp-bar">
+                            <div class="boss-hp-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="stat-circle gold-circle">
-                    <span class="stat-value" id="gold">0</span>
-                    <span class="stat-label">금화</span>
+                <div id="description-container">
+                    <p id="current-description">어두운 던전에 들어왔습니다. 두 개의 문이 보입니다.</p>
+                </div>
+            </div>
+            
+            <!-- 하단 UI 섹션 -->
+            <div id="bottom-ui">
+                <div id="choices">
+                    <button id="choice1">왼쪽 문 열기</button>
+                    <button id="choice2">오른쪽 문 열기</button>
                 </div>
                 
-                <div class="stat-circle luck-circle">
-                    <span class="stat-value" id="luck">10</span>
-                    <span class="stat-label">운</span>
+                <div id="event-choices" class="hidden">
+                    <button id="event-choice1"></button>
+                    <button id="event-choice2"></button>
                 </div>
                 
-                <div class="player-info">
-                    <span>직업: <span id="player-class">없음</span></span>
+                <!-- 스킬과 장비 탭 -->
+                <div id="tabs-container">
+                    <div class="tabs">
+                        <button class="tab-btn active" id="inventory-tab">인벤토리</button>
+                        <button class="tab-btn" id="equipment-tab">장비</button>
+                        <button class="tab-btn" id="skills-tab">스킬</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="inventory-content">
+                        <h3>인벤토리 (<span id="inventory-count">0</span>/3)</h3>
+                        <div id="items"></div>
+                        <div id="merchant" class="hidden">
+                            <h3>상인</h3>
+                            <div id="merchant-items"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="equipment-content">
+                        <h3>장비</h3>
+                        <div id="equipment-slots">
+                            <div class="equipment-slot" id="weapon-slot" data-slot="weapon">
+                                <div class="slot-name">무기</div>
+                                <div class="slot-empty">비어 있음</div>
+                            </div>
+                            <div class="equipment-slot" id="armor-slot" data-slot="armor">
+                                <div class="slot-name">방어구</div>
+                                <div class="slot-empty">비어 있음</div>
+                            </div>
+                            <div class="equipment-slot" id="accessory-slot" data-slot="accessory">
+                                <div class="slot-name">장신구</div>
+                                <div class="slot-empty">비어 있음</div>
+                            </div>
+                        </div>
+                        <div id="crafting-area">
+                            <h4>아이템 조합</h4>
+                            <div id="crafting-slots">
+                                <div class="crafting-slot" id="craft-slot-1"></div>
+                                <div class="crafting-slot" id="craft-slot-2"></div>
+                                <button id="craft-btn" disabled>조합</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="skills-content">
+                        <h3>스킬 트리</h3>
+                        <div id="skill-points">스킬 포인트: <span id="skill-points-value">0</span></div>
+                        <div id="skill-tree"></div>
+                    </div>
                 </div>
-                
-                <p class="floor-display">현재 층: <span id="floor">1</span></p>
-            </div>
-            
-            <div id="inventory">
-                <h3>인벤토리 (<span id="inventory-count">0</span>/3)</h3>
-                <div id="items"></div>
-                <div id="merchant" class="hidden">
-                    <h3>상인</h3>
-                    <div id="merchant-items"></div>
-                </div>
-            </div>
-            
-            <div id="character-display">
-                <div id="player-character" class="character-image"></div>
-                <div id="boss-character" class="boss-image hidden"></div>
-            </div>
-            
-            <div id="description">
-                <p id="current-description">어두운 던전에 들어왔습니다. 두 개의 문이 보입니다.</p>
-            </div>
-            
-            <div id="choices">
-                <button id="choice1">왼쪽 문 열기</button>
-                <button id="choice2">오른쪽 문 열기</button>
-            </div>
-            
-            <div id="event-choices" class="hidden">
-                <button id="event-choice1"></button>
-                <button id="event-choice2"></button>
             </div>
             
             <div id="game-over" class="hidden">
                 <h2>게임 오버!</h2>
                 <p>당신은 <span id="final-floor">0</span>층까지 도달했습니다.</p>
                 <p>획득한 금화: <span id="final-gold">0</span></p>
+                <p>최종 레벨: <span id="final-level">1</span></p>
                 <button id="restart-button">다시 시작</button>
             </div>
         </div>
@@ -120,6 +201,21 @@
                 </div>
                 <div class="modal-footer">
                     <button class="modal-close">확인</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 레벨업 모달 -->
+        <div class="modal-overlay" id="levelup-modal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>레벨 업!</h3>
+                </div>
+                <div class="modal-content" id="levelup-content">
+                    레벨업 정보가 여기에 표시됩니다.
+                </div>
+                <div class="modal-footer">
+                    <button class="levelup-modal-close">확인</button>
                 </div>
             </div>
         </div>

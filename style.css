@@ -1,0 +1,89 @@
+/* 보스 피격 효과 */
+.boss-hit {
+    animation: boss-hit-effect 0.5s ease-in-out;
+    filter: brightness(1.5) contrast(1.5) saturate(1.5) hue-rotate(345deg);
+}
+
+@keyframes boss-hit-effect {
+    0% { transform: translate(0, 0); filter: brightness(1) contrast(1) saturate(1); }
+    25% { transform: translate(-5px, 0); filter: brightness(1.5) contrast(1.5) saturate(1.5) hue-rotate(345deg); }
+    50% { transform: translate(5px, 0); filter: brightness(1.5) contrast(1.5) saturate(1.5) hue-rotate(345deg); }
+    75% { transform: translate(-2px, 0); filter: brightness(1.3) contrast(1.3) saturate(1.3) hue-rotate(345deg); }
+    100% { transform: translate(0, 0); filter: brightness(1) contrast(1) saturate(1); }
+}
+
+/* 데미지 팝업 */
+.damage-popup {
+    position: fixed;
+    color: #ff4d4d;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-shadow: 0 0 3px black;
+    pointer-events: none;
+    animation: damage-float 1s ease-out forwards;
+    z-index: 1000;
+}
+
+@keyframes damage-float {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px) scale(1.4);
+    }
+}
+
+/* 텍스트 스타일 */
+.damage-text {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+.gold-text {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* 모달 닫기 버튼 스타일 */
+.modal-close {
+    background-color: #44aa44;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.modal-close:hover {
+    background-color: #55cc55;
+}
+
+/* 보스 체력 상태 효과 */
+.boss-wounded {
+    animation: boss-wounded 0.5s ease-in-out;
+    filter: sepia(0.5) hue-rotate(-30deg);
+}
+
+.boss-critical {
+    animation: boss-critical 0.8s ease-in-out infinite alternate;
+    filter: sepia(0.7) hue-rotate(-60deg) contrast(1.2);
+}
+
+@keyframes boss-wounded {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes boss-critical {
+    from { transform: translateX(-3px); opacity: 0.8; }
+    to { transform: translateX(3px); opacity: 1; }
+} 
